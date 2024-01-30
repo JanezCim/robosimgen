@@ -1,0 +1,19 @@
+<launch>
+
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="headless" value="$(arg headless)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="use_sim_time" value="true" />
+    </include>
+
+    <include file="$(find robosim_gazebo)/launch/robosim_robot.launch"/>
+
+</launch>

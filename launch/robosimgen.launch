@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="robosimgen" pkg="robosimgen" type="robosimgen_node.py" output="screen"/>
+    <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" output="screen"/>
+    <node name="rviz" pkg="rviz" type="rviz" output="screen" args="-d $(find robosimgen)/rviz/robosimgen.rviz"/>
+</launch>

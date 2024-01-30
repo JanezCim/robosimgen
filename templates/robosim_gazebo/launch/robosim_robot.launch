@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <include file="$(find robosim_description)/launch/description.launch"/>
+
+    <node name="robosim_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model robosim" />
+    
+    <rosparam file="$(find robosim_gazebo)/config/robosim_controllers.yaml" command="load"/>
+    
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" args="velocity_controller joint_publisher"/>
+
+    <node name="cmd_vel_relay" type="relay" pkg="topic_tools" args="/cmd_vel /velocity_controller/cmd_vel" />
+    <node name="odom_relay" type="relay" pkg="topic_tools" args="/velocity_controller/odom /odom" />
+</launch>

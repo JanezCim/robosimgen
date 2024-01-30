@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <legacyModeNS>true</legacyModeNS>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+            <updateRate>100</updateRate>
+            <bodyName>base_footprint</bodyName>
+            <topicName>exact_pose</topicName>
+            <frameName>map</frameName>
+        </plugin>
+    </gazebo>
+
+    <xacro:macro name="wheel_friction" params="link friction">
+        <gazebo reference="${link}">
+            <mu1 value="${friction}"/>
+            <mu2 value="${friction}"/>
+            <kp value="10000000.0"/>
+            <minDepth>0.005</minDepth>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:wheel_friction link="left_wheel" friction="1.0"/>
+    <xacro:wheel_friction link="right_wheel" friction="1.0"/>
+    <xacro:wheel_friction link="left_caster_wheel" friction="0.0"/>
+    <xacro:wheel_friction link="right_caster_wheel" friction="0.0"/>
+</robot>

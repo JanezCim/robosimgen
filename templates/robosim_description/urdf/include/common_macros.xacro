@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <!-- Macros for wheels -->
+    <xacro:macro name="wheel" params="prefix reflect wheel_d wheel_r wheel_mass_kg body_pos_y">
+        <link name="${prefix}_wheel">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 ${pi/2} 0" />
+                <geometry>
+                <cylinder length="${wheel_d}" radius="${wheel_r}"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 ${pi/2} 0" />
+                <geometry>
+                <cylinder length="${wheel_d}" radius="${wheel_r}"/>
+                </geometry>
+            </collision>
+            <xacro:cylinder_inertial_with_origin radius="${wheel_r}" length="${wheel_d}" mass="${wheel_mass_kg}">
+                <origin xyz="0 0 0" rpy="0 ${pi/2} 0" />
+            </xacro:cylinder_inertial_with_origin>
+        </link>
+        <joint name="${prefix}_wheel_joint" type="continuous">
+            <axis xyz="1 0 0" rpy="0 0 0" />
+            <parent link="base_link"/>
+            <child link="${prefix}_wheel"/>
+            <origin xyz="0 ${reflect*body_pos_y} 0" rpy="0 0 ${pi/2}"/>
+        </joint>
+
+        <transmission name="${prefix}_wheel_transmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}_wheel_joint">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}_wheel_actuator">
+                <mechanicalReduction>1</mechanicalReduction>
+                <hardwareInterface>VelocityJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:macro name="caster_wheel" params="prefix reflect caster_r caster_pos_x caster_pos_y caster_pos_z">
+        <link name="${prefix}_caster_wheel">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                <sphere radius="${caster_r}"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                <sphere radius="${caster_r}"/>
+                </geometry>
+            </collision>
+        </link>
+        <joint name="${prefix}_caster_wheel_joint" type="fixed">
+            <parent link="base_link"/>
+            <child link="${prefix}_caster_wheel"/>
+            <origin xyz="${caster_pos_x} ${reflect*caster_pos_y} ${caster_pos_z}" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
+</robot>

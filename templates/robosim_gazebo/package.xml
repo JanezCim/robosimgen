@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>robosim_gazebo</name>
+  <version>0.0.0</version>
+  <description>The robosim_gazebo package</description>
+
+  <maintainer email="maintainer@@todo.todo">maintainer</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+
+  </export>
+</package>
