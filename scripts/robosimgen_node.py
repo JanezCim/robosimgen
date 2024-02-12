@@ -15,7 +15,7 @@ from robosimgen.cfg import RobosimConfig
 from visualization_msgs.msg import Marker
 
 package_name='robosim'  # Can also be considered as robot name
-output_path=f"{os.path.dirname(os.path.abspath(__file__))}/../.."
+output_path=f"{os.path.dirname(os.path.abspath(__file__))}/../.."  # TODO make this less relative
 GLOBAL_MARKER_FRAME = 'base_link'
 
 
@@ -51,6 +51,18 @@ def dynamic_param_cb(config, level):
                                             ox=0, oy=0, oz=0,
                                             sx=config.caster_size_r*2, sy=config.caster_size_r*2, sz=config.caster_size_r*2,
                                             cr=0, cg=1.0, cb=0))
+    # Delete camera marker and publish again if enabled
+    camera_mpub.publish(Marker(action=Marker.DELETE))
+    if config.enable_camera:
+        # TODO make cam body cube size variable in x,y,z? This is also its collision.
+        camera_mpub.publish(create_marker(Marker.CUBE,
+                                          GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
+                                          px=config.cam_x, py=config.cam_y, pz=config.cam_z, 
+                                          ox=config.cam_roll, oy=config.cam_pitch, oz=config.cam_yaw,
+                                          sx=config.cam_cube_size, sy=config.cam_cube_size, sz=config.cam_cube_size,
+                                          cr=0, cg=0.0, cb=1.0))
+        
+        
     if os.path.exists(output_path):
         rospy.logwarn(f"Path {output_path} already exist. Be sure no files from before are left there!")
     create_package(config)
@@ -112,5 +124,6 @@ if __name__ == "__main__":
     left_wheel_mpub = rospy.Publisher("/robot_lwheel_marker", Marker, queue_size = 2)
     right_wheel_mpub = rospy.Publisher("/robot_rwheel_marker", Marker, queue_size = 2)
     caster_wheel_mpub = rospy.Publisher("/robot_cwheel_marker", Marker, queue_size = 2)
+    camera_mpub = rospy.Publisher("/robot_cam_marker", Marker, queue_size = 2) 
     srv = Server(RobosimConfig, dynamic_param_cb)
     rospy.spin()
