@@ -1,44 +1,29 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro" name="robosim">
-
-  <xacro:property name="bodyx" value="@config.body_size_x" />
-  <xacro:property name="bodyy" value="@config.body_size_y" />
-  <xacro:property name="bodyz" value="@config.body_size_z" />
-  <xacro:property name="body_pos_x" value="@config.body_pos_x" />
-  <xacro:property name="body_pos_y" value="${bodyy/2+wheel_d/2+0.01}" />
-  <xacro:property name="body_pos_z" value="@config.body_pos_z" />
-  <xacro:property name="body_mass_kg" value="10.0" />
-
-  <xacro:property name="wheel_r" value="@config.wheel_size_r" />
-  <xacro:property name="wheel_d" value="@config.wheel_size_d" />
-  <xacro:property name="wheel_mass_kg" value="0.3" />
-
-  <xacro:property name="caster_r" value="@config.caster_size_r" />
-  <xacro:property name="caster_pos_x" value="@config.caster_pos_x" />
-  <xacro:property name="caster_pos_y" value="@config.caster_pos_y" />
-  <xacro:property name="caster_pos_z" value="@config.caster_pos_z" />
-  <xacro:property name="caster_mass_kg" value="0.1" />
-
+  <!-- TODO replace naming of robot from param -->
   <xacro:include filename="$(find robosim_description)/urdf/include/common_macros.xacro" />
   <xacro:include filename="$(find robosim_description)/urdf/include/robosim.gazebo.xacro" />
   <xacro:include filename="$(find robosim_description)/urdf/include/inertial.xacro" />
+
+  <xacro:property name="robot_yaml" value="$(find robosim_description)/config/robot.yaml" />  
+  <xacro:property name="robot" value="${xacro.load_yaml(robot_yaml)}"/>
   
   <!-- Robot base_link -->
   <link name="base_link">
     <visual>
-      <origin xyz="${body_pos_x} 0 ${body_pos_z}" rpy="0 0 0" />
+      <origin xyz="${robot['body']['pos_x']} 0 ${robot['body']['pos_z']}" rpy="0 0 0" />
       <geometry>
-        <box size="${bodyx} ${bodyy} ${bodyz}"/>
+        <box size="${robot['body']['x']} ${robot['body']['y']} ${robot['body']['z']}"/>
       </geometry>
     </visual>
   <collision>
-	  <origin xyz="${body_pos_x} 0 ${body_pos_z}" rpy="0 0 0" />
+	  <origin xyz="${robot['body']['pos_x']} 0 ${robot['body']['pos_z']}" rpy="0 0 0" />
       <geometry>
-        <box size="${bodyx} ${bodyy} ${bodyz}"/>
+        <box size="${robot['body']['x']} ${robot['body']['y']} ${robot['body']['z']}"/>
       </geometry>
   </collision>
-  <xacro:box_inertial_with_origin  x="${bodyx}" y="${bodyy}" z="${bodyz}" mass="${body_mass_kg}">
-    <origin xyz="${body_pos_x} 0 0" rpy="0 0 0" />
+  <xacro:box_inertial_with_origin  x="${robot['body']['x']}" y="${robot['body']['y']}" z="${robot['body']['z']}" mass="${robot['body']['mass_kg']}">
+    <origin xyz="${robot['body']['pos_x']} 0 0" rpy="0 0 0" />
   </xacro:box_inertial_with_origin>
   </link>
 
@@ -47,14 +32,14 @@
   <joint name="base_footprint_joint" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
-    <origin xyz="0 0 ${wheel_r}" rpy="0 0 0"/>
+    <origin xyz="0 0 ${robot['wheel']['radius']}" rpy="0 0 0"/>
   </joint>
 
   <!-- Front wheels -->
-  <xacro:wheel prefix="left" reflect="1" wheel_d="${wheel_d}" wheel_r="${wheel_r}" wheel_mass_kg="${wheel_mass_kg}" body_pos_y="${body_pos_y}"/>
-  <xacro:wheel prefix="right" reflect="-1" wheel_d="${wheel_d}" wheel_r="${wheel_r}" wheel_mass_kg="${wheel_mass_kg}" body_pos_y="${body_pos_y}"/>
+  <xacro:wheel prefix="left" reflect="1" robot="${robot}"/>
+  <xacro:wheel prefix="right" reflect="-1" robot="${robot}"/>
 
   <!-- Casters -->
-  <xacro:caster_wheel prefix="left" reflect="1" caster_r="${caster_r}" caster_pos_x="${caster_pos_x}" caster_pos_y="${caster_pos_y}" caster_pos_z="${caster_pos_z}"/>
-  <xacro:caster_wheel prefix="right" reflect="-1" caster_r="${caster_r}" caster_pos_x="${caster_pos_x}" caster_pos_y="${caster_pos_y}" caster_pos_z="${caster_pos_z}"/>
+  <xacro:caster_wheel prefix="left" reflect="1" robot="${robot}"/>
+  <xacro:caster_wheel prefix="right" reflect="-1" robot="${robot}"/>
 </robot>

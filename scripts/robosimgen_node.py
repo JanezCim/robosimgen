@@ -33,16 +33,16 @@ def dynamic_param_cb(config, level):
     left_wheel_mpub.publish(Marker(action=Marker.DELETE))
     left_wheel_mpub.publish(create_marker(Marker.CYLINDER,
                                           GLOBAL_MARKER_FRAME,
-                                          px=0, py=config.body_size_y/2+config.wheel_size_d/2, pz=0,  
+                                          px=0, py=config.wheel_offset_y, pz=0,  
                                           ox=pi/2, oy=0, oz=0, # Orient wheel upright automatically
-                                          sx=config.wheel_size_r*2, sy=config.wheel_size_r*2, sz=config.wheel_size_d,
+                                          sx=config.wheel_size_r*2, sy=config.wheel_size_r*2, sz=config.wheel_size_l,
                                           cr=0, cg=1.0, cb=0))
     right_wheel_mpub.publish(Marker(action=Marker.DELETE))
     right_wheel_mpub.publish(create_marker(Marker.CYLINDER,
                                           GLOBAL_MARKER_FRAME,
-                                          px=0, py=-config.body_size_y/2-config.wheel_size_d/2, pz=0, 
+                                          px=0, py=-config.wheel_offset_y, pz=0, 
                                           ox=pi/2, oy=0, oz=0,  # Orient wheel upright automatically
-                                          sx=config.wheel_size_r*2, sy=config.wheel_size_r*2, sz=config.wheel_size_d,
+                                          sx=config.wheel_size_r*2, sy=config.wheel_size_r*2, sz=config.wheel_size_l,
                                           cr=0, cg=1.0, cb=0))
     caster_wheel_mpub.publish(Marker(action=Marker.DELETE))
     caster_wheel_mpub.publish(create_marker(Marker.SPHERE,
@@ -61,6 +61,15 @@ def dynamic_param_cb(config, level):
                                           ox=config.cam_roll, oy=config.cam_pitch, oz=config.cam_yaw,
                                           sx=config.cam_cube_size, sy=config.cam_cube_size, sz=config.cam_cube_size,
                                           cr=0, cg=0.0, cb=1.0))
+        rp = RosPack()
+        mesh_path = f"{rp.get_path('robosimgen')}/meshes/piramid.stl"
+        cameraview_mpub.publish(create_marker(Marker.MESH_RESOURCE,
+                                              GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
+                                              px=config.cam_x, py=config.cam_y, pz=config.cam_z, 
+                                              ox=config.cam_roll, oy=config.cam_pitch, oz=config.cam_yaw,
+                                              sx=config.cam_cube_size, sy=config.cam_cube_size, sz=config.cam_cube_size,
+                                              cr=0, cg=0.0, cb=1.0,
+                                              mesh=mesh_path))
         
         
     if os.path.exists(output_path):
@@ -88,7 +97,7 @@ def create_package(config):
                 except Exception as e:
                     rospy.loginfo(f"When trying to emplace to {os.path.join(root, file)} error: {e}.")
 
-def create_marker(type, frame, px, py , pz, ox, oy, oz, sx, sy, sz, cr, cg, cb):
+def create_marker(type, frame, px, py , pz, ox, oy, oz, sx, sy, sz, cr, cg, cb, mesh=None):
     marker = Marker()
     marker.header.frame_id = frame
     marker.header.stamp = rospy.Time.now()
@@ -107,6 +116,8 @@ def create_marker(type, frame, px, py , pz, ox, oy, oz, sx, sy, sz, cr, cg, cb):
     marker.color.g = cg
     marker.color.b = cb
     marker.color.a = 0.8
+    if mesh is not None:
+        marker.mesh_resource=mesh
 
     # Set the pose of the marker
     marker.pose.position.x = px
@@ -124,6 +135,7 @@ if __name__ == "__main__":
     left_wheel_mpub = rospy.Publisher("/robot_lwheel_marker", Marker, queue_size = 2)
     right_wheel_mpub = rospy.Publisher("/robot_rwheel_marker", Marker, queue_size = 2)
     caster_wheel_mpub = rospy.Publisher("/robot_cwheel_marker", Marker, queue_size = 2)
-    camera_mpub = rospy.Publisher("/robot_cam_marker", Marker, queue_size = 2) 
+    camera_mpub = rospy.Publisher("/robot_cam_marker", Marker, queue_size = 2)
+    cameraview_mpub = rospy.Publisher("/robot_camview_marker", Marker, queue_size = 2)
     srv = Server(RobosimConfig, dynamic_param_cb)
     rospy.spin()

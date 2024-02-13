@@ -1,0 +1,21 @@
+body:
+  x: @config.body_size_x
+  y: @config.body_size_y
+  z: @config.body_size_z
+  pos_x: @config.body_pos_x
+  pos_y: @config.body_pos_x # TODO: bodyy/2+wheel_d/2+0.01}
+  pos_z: @config.body_pos_z
+  mass_kg: @config.body_mass_kg
+
+wheel:
+  radius: @config.wheel_size_r
+  length: @config.wheel_size_l
+  offset_y: @config.wheel_offset_y
+  mass_kg: @config.wheel_mass_kg
+
+caster:
+  radius: @config.caster_size_r
+  pos_x: @config.caster_pos_x
+  pos_y: @config.caster_pos_y
+  pos_z: @config.caster_pos_z
+  mass_kg: 0.1
