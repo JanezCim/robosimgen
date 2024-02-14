@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ## [Unreleased]
 ### Added
-- Changelog
 - Ability to change robot name of generated project.
-- Single camera capability.
+- Changelog added.
 - Fist commit - Generates valid, drivable Gazebo model of basic differential Robot.
+- Single camera capability.
+- Single lidar capabilty.

@@ -17,3 +17,25 @@ camera:
   format: R8G8B8
   cam_view_visualize: @config.cam_view_visualize
   mesh: ''  # TODO add mesh
+
+lidar:
+  enable: @config.enable_lidar
+  name: @config.lidar_name
+  parent_link: base_link
+  x: @config.lidar_x
+  y: @config.lidar_y
+  z: @config.lidar_z
+  roll: @config.lidar_roll
+  pitch: @config.lidar_pitch
+  yaw: @config.lidar_yaw
+  radius: @config.lidar_body_radius 
+  length: @config.lidar_body_length
+  update_rate: @config.lidar_update_rate
+  samples: @config.lidar_samples
+  horizontal_resolution: @config.lidar_horizontal_resolution
+  min_angle: @config.lidar_min_angle
+  max_angle: @config.lidar_max_angle
+  min_range: @config.lidar_min_range
+  max_range: @config.lidar_max_range
+  range_resolution: @config.lidar_range_resolution
+  lidar_ray_visualize: @config.lidar_ray_visualize

@@ -52,7 +52,6 @@ def dynamic_param_cb(config, level):
     # Delete camera marker and publish again if enabled
     camera_mpub.publish(Marker(action=Marker.DELETE))
     if config.enable_camera:
-        # TODO make cam body cube size variable in x,y,z? This is also its collision.
         camera_mpub.publish(create_marker(Marker.CYLINDER,
                                           GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
                                           px=config.cam_x, py=config.cam_y, pz=config.cam_z, 
@@ -62,6 +61,22 @@ def dynamic_param_cb(config, level):
                                           sy=config.cam_body_radius*2, 
                                           sz=config.cam_body_length,
                                           cr=0, cg=0.0, cb=1.0))
+        # TODO add camera fov marker
+        
+    # Delete lidar marker and publish again if enabled
+    lidar_mpub.publish(Marker(action=Marker.DELETE))
+    if config.enable_lidar:
+        lidar_mpub.publish(create_marker(Marker.CYLINDER,
+                                          GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
+                                          px=config.lidar_x, py=config.lidar_y, pz=config.lidar_z, 
+                                          ox=config.lidar_roll, oy=config.lidar_pitch, oz=config.lidar_yaw,
+                                          sx=config.lidar_body_radius*2,
+                                          sy=config.lidar_body_radius*2, 
+                                          sz=config.lidar_body_length,
+                                          cr=1.0, cg=0.0, cb=1.0))
+        #TODO add lidar ray view marker
+        
+    
         
     if os.path.exists(output_path):
         rospy.logwarn(f"Path {output_path} already exist. Be sure no files from before are left there!")
@@ -91,14 +106,13 @@ def create_package(config):
                         print(f"Creating {abs_out_file_path}")
                         fi.write(out)  # Create file and populate with template which has params emplaced
                 except Exception as e:
-                    rospy.loginfo(f"When trying to emplace to {os.path.join(root, file)} error: {e}.")
+                    rospy.logerr(f"When trying to emplace to {os.path.join(root, file)} error: {e}.")
 
 def create_marker(type, frame, px, py , pz, ox, oy, oz, sx, sy, sz, cr, cg, cb, mesh=None):
     marker = Marker()
     marker.header.frame_id = frame
     marker.header.stamp = rospy.Time.now()
 
-    # set shape, Arrow: 0; Cube: 1 ; Sphere: 2 ; Cylinder: 3
     marker.type = type
     marker.id = 0
 
@@ -132,5 +146,6 @@ if __name__ == "__main__":
     right_wheel_mpub = rospy.Publisher("/robot_rwheel_marker", Marker, queue_size = 2)
     caster_wheel_mpub = rospy.Publisher("/robot_cwheel_marker", Marker, queue_size = 2)
     camera_mpub = rospy.Publisher("/robot_cam_marker", Marker, queue_size = 2)
+    lidar_mpub = rospy.Publisher("/robot_lidar_marker", Marker, queue_size = 2)
     srv = Server(RobosimConfig, dynamic_param_cb)
     rospy.spin()

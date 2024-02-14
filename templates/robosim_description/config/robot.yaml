@@ -1,3 +1,4 @@
+name: @config.robot_name
 body:
   x: @config.body_size_x
   y: @config.body_size_y

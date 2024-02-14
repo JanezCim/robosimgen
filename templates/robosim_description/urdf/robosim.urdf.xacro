@@ -47,9 +47,16 @@
   <xacro:caster_wheel prefix="right" reflect="-1" robot="${robot}"/>
 
   <xacro:if value="${sensors['camera']['enable'] == True }" >
-    <xacro:camera camera="${sensors['camera']}">
+    <xacro:camera camera="${sensors['camera']}" robot="${robot}">
       <origin xyz="${sensors['camera']['x']} ${sensors['camera']['y']} ${sensors['camera']['z']}" 
               rpy="${sensors['camera']['roll']} ${sensors['camera']['pitch']} ${sensors['camera']['yaw']}" />
     </xacro:camera>
+  </xacro:if>
+
+  <xacro:if value="${sensors['lidar']['enable'] == True }" >
+    <xacro:lidar lidar="${sensors['lidar']}" robot="${robot}">
+      <origin xyz="${sensors['lidar']['x']} ${sensors['lidar']['y']} ${sensors['lidar']['z']}" 
+              rpy="${sensors['lidar']['roll']} ${sensors['lidar']['pitch']} ${sensors['lidar']['yaw']}" />
+    </xacro:lidar>
   </xacro:if>
 </robot>
