@@ -55,22 +55,15 @@ def dynamic_param_cb(config, level):
     camera_mpub.publish(Marker(action=Marker.DELETE))
     if config.enable_camera:
         # TODO make cam body cube size variable in x,y,z? This is also its collision.
-        camera_mpub.publish(create_marker(Marker.CUBE,
+        camera_mpub.publish(create_marker(Marker.CYLINDER,
                                           GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
                                           px=config.cam_x, py=config.cam_y, pz=config.cam_z, 
-                                          ox=config.cam_roll, oy=config.cam_pitch, oz=config.cam_yaw,
-                                          sx=config.cam_cube_size, sy=config.cam_cube_size, sz=config.cam_cube_size,
+                                          # pi/2 is added to pich because camera has to have x in view direction
+                                          ox=config.cam_roll, oy=config.cam_pitch+pi/2, oz=config.cam_yaw,
+                                          sx=config.cam_body_radius*2,
+                                          sy=config.cam_body_radius*2, 
+                                          sz=config.cam_body_length,
                                           cr=0, cg=0.0, cb=1.0))
-        rp = RosPack()
-        mesh_path = f"{rp.get_path('robosimgen')}/meshes/piramid.stl"
-        cameraview_mpub.publish(create_marker(Marker.MESH_RESOURCE,
-                                              GLOBAL_MARKER_FRAME,  # TODO relative to input frame from params?
-                                              px=config.cam_x, py=config.cam_y, pz=config.cam_z, 
-                                              ox=config.cam_roll, oy=config.cam_pitch, oz=config.cam_yaw,
-                                              sx=config.cam_cube_size, sy=config.cam_cube_size, sz=config.cam_cube_size,
-                                              cr=0, cg=0.0, cb=1.0,
-                                              mesh=mesh_path))
-        
         
     if os.path.exists(output_path):
         rospy.logwarn(f"Path {output_path} already exist. Be sure no files from before are left there!")
@@ -136,6 +129,5 @@ if __name__ == "__main__":
     right_wheel_mpub = rospy.Publisher("/robot_rwheel_marker", Marker, queue_size = 2)
     caster_wheel_mpub = rospy.Publisher("/robot_cwheel_marker", Marker, queue_size = 2)
     camera_mpub = rospy.Publisher("/robot_cam_marker", Marker, queue_size = 2)
-    cameraview_mpub = rospy.Publisher("/robot_camview_marker", Marker, queue_size = 2)
     srv = Server(RobosimConfig, dynamic_param_cb)
     rospy.spin()

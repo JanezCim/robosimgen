@@ -1,0 +1,19 @@
+camera:
+  enable: @config.enable_camera
+  name: @config.cam_name
+  parent_link: base_link
+  x: @config.cam_x
+  y: @config.cam_y
+  z: @config.cam_z
+  roll: @config.cam_roll
+  pitch: @config.cam_pitch
+  yaw: @config.cam_yaw
+  radius: @config.cam_body_radius
+  length: @config.cam_body_length
+  update_rate: @config.cam_update_rate
+  horizontal_fov: @config.cam_horizontal_fov 
+  width: @config.cam_width
+  height: @config.cam_height
+  format: R8G8B8
+  cam_view_visualize: @config.cam_view_visualize
+  mesh: ''  # TODO add mesh

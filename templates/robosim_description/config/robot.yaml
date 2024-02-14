@@ -3,7 +3,7 @@ body:
   y: @config.body_size_y
   z: @config.body_size_z
   pos_x: @config.body_pos_x
-  pos_y: @config.body_pos_x # TODO: bodyy/2+wheel_d/2+0.01}
+  pos_y: @config.body_pos_x
   pos_z: @config.body_pos_z
   mass_kg: @config.body_mass_kg
 
@@ -18,4 +18,4 @@ caster:
   pos_x: @config.caster_pos_x
   pos_y: @config.caster_pos_y
   pos_z: @config.caster_pos_z
-  mass_kg: 0.1
+  mass_kg: @config.caster_mass_kg
