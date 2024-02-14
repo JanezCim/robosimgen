@@ -4,8 +4,6 @@ import rospy
 from em import expand
 from math import pi
 import os
-from rospkg import RosPack
-
 
 # ros imports
 import tf_conversions
@@ -14,7 +12,7 @@ from dynamic_reconfigure.server import Server
 from robosimgen.cfg import RobosimConfig
 from visualization_msgs.msg import Marker
 
-package_name='robosim'  # Can also be considered as robot name
+template_robot_name='robosim'  # Robot name as used within templates
 output_path=f"{os.path.dirname(os.path.abspath(__file__))}/../.."  # TODO make this less relative
 GLOBAL_MARKER_FRAME = 'base_link'
 
@@ -72,7 +70,6 @@ def dynamic_param_cb(config, level):
     return config
 
 def create_package(config):
-    rp = RosPack()
     abs_in_templ_path = f"{os.path.dirname(os.path.abspath(__file__))}/../templates"  # Get path of templates
     for root, dirs, files in os.walk(abs_in_templ_path):  # Walk through all files in tempalte package
         for file in files:
@@ -81,8 +78,14 @@ def create_package(config):
                 try:
                     out = expand(temp, {'config': config})  # Import file content and emplace specified params
                     # TODO figure out how to also change package and file names to not be hardcoded
-                    abs_out_pkg_path = f"{output_path}/{package_name}"  # Output package path
-                    abs_out_file_path = f"{abs_out_pkg_path}/{os.path.relpath(root, abs_in_templ_path)}/{file}"
+                    abs_out_pkg_path = f"{output_path}/{config.robot_name}"  # Absolute output package path
+                    # Relative path of file within template folder
+                    rel_temp_file_path = (f"{os.path.relpath(root, abs_in_templ_path)}/{file}")
+                    # Within relative template folder path replace template robot name with robot name from parameter
+                    rel_out_file_path = rel_temp_file_path.replace(template_robot_name, config.robot_name)
+                    abs_out_file_path = f"{abs_out_pkg_path}/{rel_out_file_path}"  # Create absolute path to output file
+                    # Replace template robot name with robot name from parameter within paths and folder names
+                    abs_out_file_path.replace(template_robot_name, config.robot_name)
                     os.makedirs(os.path.dirname(abs_out_file_path), exist_ok=True)  # Create dirs to output file
                     with open(abs_out_file_path, 'w') as fi:
                         print(f"Creating {abs_out_file_path}")

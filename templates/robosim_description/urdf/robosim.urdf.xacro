@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://wiki.ros.org/xacro" name="robosim">
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="@config.robot_name">
   <!-- TODO replace naming of robot from param -->
-  <xacro:include filename="$(find robosim_description)/urdf/include/common_macros.xacro" />
-  <xacro:include filename="$(find robosim_description)/urdf/include/robosim.gazebo.xacro" />
-  <xacro:include filename="$(find robosim_description)/urdf/include/inertial.xacro" />
-  <xacro:include filename="$(find robosim_description)/urdf/include/sensors_macros.xacro" />
+  <xacro:include filename="$(find @(config.robot_name)_description)/urdf/include/common_macros.xacro" />
+  <xacro:include filename="$(find @(config.robot_name)_description)/urdf/include/@(config.robot_name).gazebo.xacro" />
+  <xacro:include filename="$(find @(config.robot_name)_description)/urdf/include/inertial.xacro" />
+  <xacro:include filename="$(find @(config.robot_name)_description)/urdf/include/sensors_macros.xacro" />
 
-  <xacro:property name="robot_yaml" value="$(find robosim_description)/config/robot.yaml" />  
+  <xacro:property name="robot_yaml" value="$(find @(config.robot_name)_description)/config/robot.yaml" />  
   <xacro:property name="robot" value="${xacro.load_yaml(robot_yaml)}"/>
-  <xacro:property name="sensors_yaml" value="$(find robosim_description)/config/sensors.yaml" />  
+  <xacro:property name="sensors_yaml" value="$(find @(config.robot_name)_description)/config/sensors.yaml" />  
   <xacro:property name="sensors" value="${xacro.load_yaml(sensors_yaml)}"/>
   
   <!-- Robot base_link -->

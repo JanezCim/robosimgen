@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-    <include file="$(find robosim_description)/launch/description.launch"/>
+    <include file="$(find @(config.robot_name)_description)/launch/description.launch"/>
 
-    <node name="robosim_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model robosim" />
+    <node name="@(config.robot_name)_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model @config.robot_name" />
     
-    <rosparam file="$(find robosim_gazebo)/config/robosim_controllers.yaml" command="load"/>
+    <rosparam file="$(find @(config.robot_name)_gazebo)/config/@(config.robot_name)_controllers.yaml" command="load"/>
     
     <node name="controller_spawner" pkg="controller_manager" type="spawner" args="velocity_controller joint_publisher"/>
 
