@@ -14,6 +14,6 @@
         <arg name="use_sim_time" value="true" />
     </include>
 
-    <include file="$(find robosim_gazebo)/launch/robosim_robot.launch"/>
+    <include file="$(find @(config.robot_name)_gazebo)/launch/@(config.robot_name)_robot.launch"/>
 
 </launch>

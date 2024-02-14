@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>robosim_gazebo</name>
+  <name>@(config.robot_name)_gazebo</name>
   <version>0.0.0</version>
-  <description>The robosim_gazebo package</description>
+  <description>The @(config.robot_name)_gazebo package</description>
 
   <maintainer email="maintainer@@todo.todo">maintainer</maintainer>
 
